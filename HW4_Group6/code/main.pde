@@ -5,17 +5,15 @@ ball player = new ball();
 int started = 0;
 int ccc = 0;
 int wcount = 0;
-int [] w = new int[3];
 wall w1 = new wall();
 wall w2 = new wall();
 wall w3 = new wall();
+int point = 0;
 
 
 void setup(){
   surface.setTitle("HW4_場景與角色(團隊作業)");
-  w[0] = 0;
-  w[1] = 0;
-  w[2] = 0;
+
   surface.setResizable(false);
   surface.setLocation(100, 100);
   ff = createFont("細明體",32);
@@ -35,19 +33,30 @@ void draw(){
  
  if(started == 0)rr.update();
  else{
-   
+   text("分數：",25,50);
+   text(point,200,50);
    player.update();
-   if(wcount>=120){
+   if(wcount>=90){
      wcount = 0;
-     if(w[0]==1){
-       if(w[1]==1){
-          w[2] = 1;
-          w2.
+     if(w3.appear==1){
+       if(w1.appear==1 && w2.appear == 0){
+          w2.appear = 1;
+           w2.setup();
        }
+       else if(w1.appear==0){
+       w1.appear = 1;
+     w1.setup();}
+     }
+     else{w3.appear = 1;
+      w3.setup();
      }
      
    }
    wcount += 1;
+   
+   if(w3.appear==1)w3.draw();
+   if(w1.appear==1)w1.draw();
+   if(w2.appear==1)w2.draw();
  }
   
 }
@@ -56,10 +65,27 @@ class wall{
   float h = random(50,500);
   float x = 1200;
   float y = random(-200,400);
+  int appear = 0;
   void draw(){
-     rect(x,y,200,h); 
-     x -= 20;
-     
+     rect(x,y,100,h); 
+     x -= 10;
+     if(x<0){
+     appear=0;
+   point += 1;}
+     if(x >= 0 && x <= 100 ){
+        if(y+h >= player.py && y <= player.py){
+           started = 0; 
+           w1.appear = 0;
+           w2.appear = 0;
+           w3.appear = 0;
+        }
+     }
+  }
+  void setup(){
+    appear  = 1;
+     h = random(50,500);
+  x = 1200;
+  y = random(-200,400);
   }
   
 }
@@ -72,7 +98,10 @@ class ball{
     else{py += movement;
     ccc += 1;
     }
+    if(py>600)py=600;
     circle(100,py,50);
+    
+    
   }
   
 }
@@ -105,9 +134,10 @@ class title_{
 }
 void mouseClicked(){
  
-  if(started==0) started = 1;
+  if(started==0){started = 1;
+  point = 0;}
   else{
-    fill(random(0,255),random(0,255),124);
+    fill(random(0,100),random(0,100),0);
     ccc = 0;
   }
   
